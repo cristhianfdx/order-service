@@ -86,14 +86,21 @@ RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
 
 ```
 .
+order-service/
+├── cmd/ # Application entry point
+│ └── main.go
 ├── internal/
-│   ├── api/            # HTTP handlers
-│   ├── service/        # Business logic (ports)
-│   ├── repository/     # Persistence layer (adapters)
-│   └── domain/         # Core domain entities
-├── docker-compose.yml
-├── main.go
-└── README.md
+│ ├── adapters/ # Infrastructure (db, rabbitmq, etc.)
+│ │ ├── postgres/
+│ │ └── rabbitmq/
+│ ├── api/ # Controllers / Handlers (Gin)
+│ ├── application/ # Business logic / Use Cases
+│ ├── domain/ # Entities / Interfaces
+│ └── ports/ # Ports for dependency injection
+├── config/ # Configuration
+├── docker-compose.yml # Docker services
+├── go.mod / go.sum # Go modules
+└── README.md # This file
 ```
 
 ## License
