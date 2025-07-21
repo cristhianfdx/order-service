@@ -1,43 +1,101 @@
-# 🧾 Order Service
 
-A RESTful Order Service built in Go using the Gin framework. It supports order creation, persistence in PostgreSQL, asynchronous processing via RabbitMQ, and a Backoffice interface for visualization.
+# Order Service
 
----
+A Go-based microservice for managing orders, using PostgreSQL for data persistence, RabbitMQ for message queuing, and Gin-Gonic as the HTTP server framework.
 
-## ⚙️ Tech Stack
+## Features
 
-- 🐹 **Go** with [Gin](https://github.com/gin-gonic/gin) for HTTP handling
-- 🐘 **PostgreSQL** for persistent order storage
-- 📦 **RabbitMQ** for asynchronous event publishing
-- 🧱 **GORM** as the ORM layer for database operations
+- RESTful API for managing orders.
+- PostgreSQL with GORM for database operations.
+- RabbitMQ integration for publishing order events.
+- Docker Compose setup for easy local development.
+- Secure connection with SSH keygen.
+- Access to RabbitMQ management web interface.
 
----
+## Technologies
 
-## 🚀 Features
+- Go (Gin, GORM)
+- PostgreSQL
+- RabbitMQ
+- Docker & Docker Compose
 
-- Create and retrieve orders via API
-- Orders are stored in a PostgreSQL database
-- Each order is published to a **RabbitMQ queue**
+## Setup Instructions
 
----
-
-## 📦 Endpoints
-
-| Method | Route            | Description                     |
-|--------|------------------|--------------------------------|
-| POST   | `/orders`        | Create a new order             |
-| GET    | `/orders/:id`    | Get an order by its ID         |
-
----
-
-## 🧪 CURL Examples
-
-### ✅ Create a New Order
+### 1. Clone the repository
 
 ```bash
-curl -X POST http://localhost:8080/orders \
-  -H "Content-Type: application/json" \
-  -d '{
-    "amount": 50000,
-    "item": "TV"
-  }'
+git clone git@github.com:your-username/order-service.git
+cd order-service
+```
+
+### 2. Generate SSH key (if needed for GitHub access)
+
+```bash
+ssh-keygen -t ed25519 -C "your_email@example.com"
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+cat ~/.ssh/id_ed25519.pub
+# Add this public key to your GitHub account
+```
+
+### 3. Run the services
+
+```bash
+docker-compose up --build
+go run cmd/main.go
+```
+
+### 4. Access RabbitMQ Management
+
+RabbitMQ management UI is available at [http://localhost:15672](http://localhost:15672)
+
+- **Username**: guest
+- **Password**: guest
+
+## API Endpoints
+
+### Create Order
+
+```bash
+curl -X POST http://localhost:8080/orders   -H "Content-Type: application/json"   -d '{
+    "item": "Calculator",
+    "amount": 20000
+}'
+```
+
+### Get Order by ID
+
+```bash
+curl http://localhost:8080/orders/1
+```
+
+## Environment Variables
+
+You can adjust the following values in `.env`:
+
+```env
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=postgres
+DB_NAME=orders
+RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+```
+
+## Project Structure
+
+```
+.
+├── internal/
+│   ├── api/            # HTTP handlers
+│   ├── service/        # Business logic (ports)
+│   ├── repository/     # Persistence layer (adapters)
+│   └── domain/         # Core domain entities
+├── docker-compose.yml
+├── main.go
+└── README.md
+```
+
+## License
+
+This project is licensed under the MIT License.
